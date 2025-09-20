@@ -1,3 +1,7 @@
+import { rewriteHTML } from './rewrite/html.js'
+import { encodeURL } from './lib/encode.js'
+import config from './uv.config.js'
+
 export default {
   async fetch(request) {
     const url = new URL(request.url)
@@ -5,9 +9,7 @@ export default {
     const fingerprint = url.searchParams.get("fp") || "anonymous"
     const badge = url.searchParams.get("badge") || "none"
 
-    if (!target) {
-      return new Response("Missing ?url=", { status: 400 })
-    }
+    if (!target) return new Response("Missing ?url=", { status: 400 })
 
     const res = await fetch(target, {
       headers: {
@@ -19,9 +21,8 @@ export default {
 
     let body = await res.text()
 
-    // Optional: inject badge overlay
     if (res.headers.get("content-type")?.includes("text/html")) {
-      body = body.replace("</body>", `<div style="position:fixed;bottom:10px;right:10px;background:#000;color:#fff;padding:5px;">Badge: ${badge}</div></body>`)
+      body = rewriteHTML(body, target, config)
     }
 
     const response = new Response(body, res)

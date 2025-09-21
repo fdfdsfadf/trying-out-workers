@@ -1,0 +1,7 @@
+tunnel: interstellar-proxy
+credentials-file: C:\Users\qkly1\.cloudflared\b8a838c1-93d8-411d-9a86-dc8e24ffca08.json
+
+ingress:
+  - hostname: proxy.hi.dev.macbooksuck.xyz
+    service: http://localhost:8080
+  - service: http_status:404
